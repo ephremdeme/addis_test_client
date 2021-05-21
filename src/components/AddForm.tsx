@@ -35,10 +35,10 @@ function AddForm() {
     setOpen(false);
   };
 
-  const onSubmit = (data: IEmployeeBase) => {
-    console.log(data);
+  console.log(errors);
 
-    // dispatch({ type: ActionConstant.SAGA_ADD_EMPLOYEE, payload: data });
+  const onSubmit = (data: IEmployeeBase) => {
+    dispatch({ type: ActionConstant.SAGA_ADD_EMPLOYEE, payload: data });
   };
 
   return (
@@ -116,10 +116,18 @@ function AddForm() {
                 </Col>
 
                 <Col size={7}>
-                  <Input type="Date" {...register("birth_date")} />
+                  <Input
+                    type="Date"
+                    {...register("birth_date", {
+                      required: true,
+                      validate: (value) => new Date(value) < new Date(),
+                    })}
+                  />
                   {errors.birth_date && (
                     <ErrorHelperText>
-                      {errors.birth_date.message || "Date of Birth Is Required"}
+                      {errors.birth_date.type === "validate"
+                        ? "Birth date cannot be in the future!"
+                        : "Date of Birth Is Required"}
                     </ErrorHelperText>
                   )}
                 </Col>
